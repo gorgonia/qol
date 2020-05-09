@@ -69,6 +69,7 @@ func ToClass(a tensor.Tensor, threshold float64) Class {
 	default:
 		panic(fmt.Sprintf("Data of type %T not implemented for ToClass()", data))
 	}
+	panic("Unreachable")
 }
 
 // ToClass converts a OneHotMatrix to Classes. This function panics if `a` is not a matrix.
@@ -99,10 +100,14 @@ func ToClasses(a tensor.Tensor, threshold float64) []Class {
 		threshold = 0.55
 	}
 
-	iter := native.Matrix(a.(*tensor.Dense))
-	retVal := make([]Class, a, Shape()[0])
+	iter, err := native.Matrix(a.(*tensor.Dense))
+	if err != nil {
+		panic(err)
+	}
+	retVal := make([]Class, a.Shape()[0])
 	switch d := iter.(type) {
 	case [][]float32:
+		thresh := float32(threshold)
 		for i := range d {
 			for j := range d[i] {
 				if d[i][j] > thresh {
@@ -112,6 +117,7 @@ func ToClasses(a tensor.Tensor, threshold float64) []Class {
 			}
 		}
 	case [][]float64:
+		thresh := threshold
 		for i := range d {
 			for j := range d[i] {
 				if d[i][j] > thresh {
@@ -141,6 +147,7 @@ func ToClasses(a tensor.Tensor, threshold float64) []Class {
 	default:
 		panic(fmt.Sprintf("Data of type %T not implemented for ToClasses()", iter))
 	}
+	return retVal
 }
 
 // ToOneHotVector converts a Class to a OneHotVector.
@@ -171,7 +178,7 @@ func UnsafeToOneHotVector(a Class, numClasses int, reuse *tensor.Dense) *tensor.
 	id := int(a)
 	reuse.Zero()
 	var err error
-	switch t {
+	switch dt {
 	case tensor.Float32:
 		err = reuse.SetAt(float32(1), id)
 	case tensor.Float64:
@@ -183,7 +190,7 @@ func UnsafeToOneHotVector(a Class, numClasses int, reuse *tensor.Dense) *tensor.
 	case tensor.Int32:
 		err = reuse.SetAt(int32(1), id)
 	default:
-		panic(fmt.Sprintf("UnsafeToOneHotVector not implemented for %v", t))
+		panic(fmt.Sprintf("UnsafeToOneHotVector not implemented for %v", dt))
 	}
 	if err != nil {
 		panic(err.Error())
@@ -197,8 +204,8 @@ func UnsafeToOneHotMatrix(a []Class, numClasses int, reuse *tensor.Dense) *tenso
 	reuse.Zero()
 	for i := range a {
 		var err error
-		id := a[i]
-		switch t {
+		id := int(a[i])
+		switch dt {
 		case tensor.Float32:
 			err = reuse.SetAt(float32(1), i, id)
 		case tensor.Float64:
@@ -210,7 +217,7 @@ func UnsafeToOneHotMatrix(a []Class, numClasses int, reuse *tensor.Dense) *tenso
 		case tensor.Int32:
 			err = reuse.SetAt(int32(1), i, id)
 		default:
-			panic(fmt.Sprintf("UnsafeToOneHotVector not implemented for %v", t))
+			panic(fmt.Sprintf("UnsafeToOneHotVector not implemented for %v", dt))
 		}
 		if err != nil {
 			panic(err.Error())
