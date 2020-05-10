@@ -16,7 +16,7 @@ func TestToClass(t *testing.T) {
 	// Panic on Unreachable
 	assert.Panics(t, func() { ToClass(T.New(T.WithBacking([]float32{0, 0, 1, 0, 0})), 999) })
 
-	// From here On only specifying vectors of length 5 varying type and threshold
+	// From here on only specifying vectors of length 5 varying type and threshold
 	// Float32
 	assert.Equal(t, ToClass(T.New(T.WithBacking([]float32{0, 0, 1, 0, 0})), 0), Class(2))
 	assert.Equal(t, ToClass(T.New(T.WithBacking([]float32{0.1, 0.1, 0.6, 0.7, 0.1})), 0), Class(2))
@@ -43,7 +43,14 @@ func TestToClass(t *testing.T) {
 }
 
 func TestToClasses(t *testing.T) {
-	// Not Implemented
+	// TODO: panic without an iterator
+	// Test panic on non matrix
+	assert.Panics(t, func() { ToClass(T.New(T.Of(T.Float32), T.WithShape(10)), 0) })
+	assert.Panics(t, func() { ToClass(T.New(T.Of(T.Float32), T.WithShape(10, 10, 10)), 0) })
+	// Panic on unsupported T dtype
+	assert.Panics(t, func() { ToClass(T.New(T.Of(T.Complex64), T.WithShape(10)), 0) })
+	// Panic on Unreachable
+	assert.Panics(t, func() { ToClass(T.New(T.WithBacking([][]float32{{0, 0, 1}, {0, 0, 1}})), 999) })
 }
 
 func TestToOneHotVector(t *testing.T) {
