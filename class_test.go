@@ -169,7 +169,7 @@ func (suite *ToOneHotVectorSuite) Test() {
 	}
 }
 
-func TestToOneHotVector(t *testing.T) {
+func TestToOneHotVectorSuite(t *testing.T) {
 	// Panics
 	// n classes not the same as vector length
 	assert.Panics(t, func() { UnsafeToOneHotVector(0, 999, T.New(T.Of(T.Float32), T.WithShape(5))) })
@@ -218,7 +218,7 @@ func TestToOneHotVector(t *testing.T) {
 	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []int{0, 0, 0, 0, 0}, []int{0, 0, 0, 1, 0}))
 }
 
-func TestToOneHotVectorSuite(t *testing.T) {
+func TestUnsafeToOneHotVectorSuite(t *testing.T) {
 	// Panics
 	// n classes not the same as vector length
 	assert.Panics(t, func() { UnsafeToOneHotVector(0, 999, T.New(T.Of(T.Float32), T.WithShape(5))) })
@@ -311,6 +311,10 @@ func TestToOneHotMatrix(t *testing.T) {
 }
 
 func TestUnsafeToOneHotMatrix(t *testing.T) {
+	// Float32
+	// Row Vector
 	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1}, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0}, []int{1, 5}))
+	// Col Vector
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{0, 0, 0, 0, 0}, 1, []float32{0, 0, 0, 0, 0}, []float32{1, 1, 1, 1, 1}, []int{5, 1}))
 	// suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1, 1}, 5, []float32{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0, 0, 1, 0, 0, 0}, []int{2, 5}))
 }
