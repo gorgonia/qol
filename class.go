@@ -112,7 +112,10 @@ func ToClasses(a tensor.Tensor, threshold float64) []Class {
 			for j := range d[i] {
 				if d[i][j] > thresh {
 					retVal[i] = Class(j)
-					continue
+					break
+				}
+				if j == len(d[i])-1 {
+					panic(fmt.Sprintf("Unreachable class in matrix at row: %d", i))
 				}
 			}
 		}
@@ -122,7 +125,10 @@ func ToClasses(a tensor.Tensor, threshold float64) []Class {
 			for j := range d[i] {
 				if d[i][j] > thresh {
 					retVal[i] = Class(j)
-					continue
+					break
+				}
+				if j == len(d[i])-1 {
+					panic(fmt.Sprintf("Unreachable class in matrix at row: %d", i))
 				}
 			}
 		}
@@ -131,7 +137,10 @@ func ToClasses(a tensor.Tensor, threshold float64) []Class {
 			for j := range d[i] {
 				if d[i][j] >= 1 {
 					retVal[i] = Class(j)
-					continue
+					break
+				}
+				if j == len(d[i])-1 {
+					panic(fmt.Sprintf("Unreachable class in matrix at row: %d", i))
 				}
 			}
 		}
@@ -140,7 +149,10 @@ func ToClasses(a tensor.Tensor, threshold float64) []Class {
 			for j := range d[i] {
 				if d[i][j] >= 1 {
 					retVal[i] = Class(j)
-					continue
+					break
+				}
+				if j == len(d[i])-1 {
+					panic(fmt.Sprintf("Unreachable class in matrix at row: %d", i))
 				}
 			}
 		}
