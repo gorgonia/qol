@@ -306,6 +306,24 @@ func TestToOneHotMatrix(t *testing.T) {
 }
 
 func TestUnsafeToOneHotMatrix(t *testing.T) {
+	// Panic tests
+	// Non Matrix
+	assert.Panics(t, func() { UnsafeToOneHotMatrix([]Class{1}, 5, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	assert.Panics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1, 1}, 5, T.New(T.Of(T.Float32), T.WithShape(5, 5, 5))) })
+	assert.NotPanics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1, 1}, 5, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+	// Wrong number of classes (rows)
+	assert.Panics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1, 1, 1}, 5, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+	assert.Panics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1}, 5, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+	assert.NotPanics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1, 1}, 5, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+	// Wrong number of classes (cols)
+	assert.Panics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1, 1}, 4, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+	assert.Panics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1, 1}, 6, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+	assert.NotPanics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1, 1}, 5, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+	// Unsupported type
+	assert.Panics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1, 1}, 5, T.New(T.Of(T.Complex64), T.WithShape(5, 5))) })
+	assert.NotPanics(t, func() { UnsafeToOneHotMatrix([]Class{1, 1, 1, 1, 1}, 5, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+
+	// Value tests
 	// Float32
 	// Row Vector
 	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1}, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0}, []int{1, 5}))
