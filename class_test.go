@@ -311,6 +311,6 @@ func TestToOneHotMatrix(t *testing.T) {
 }
 
 func TestUnsafeToOneHotMatrix(t *testing.T) {
-	// suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1}, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0}, []int{1, 5}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1}, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0}, []int{1, 5}))
 	// suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1, 1}, 5, []float32{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0, 0, 1, 0, 0, 0}, []int{2, 5}))
 }

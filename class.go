@@ -233,23 +233,20 @@ func UnsafeToOneHotMatrix(a []Class, numClasses uint, reuse *tensor.Dense) *tens
 	reuse.Zero()
 	var err error
 	// Handline shapes of [1, numClasses]
-	if len(a) == 1 {
+	if reuse.IsRowVec() {
 		switch dt {
 		case tensor.Float32:
-			err = reuse.SetAt(float32(1), 0, int(a[0])-1)
+			reuse.Set(int(a[0]), float32(1))
 		case tensor.Float64:
-			err = reuse.SetAt(float64(1), int(a[0]))
+			reuse.Set(int(a[0]), float64(1))
 		case tensor.Int64:
-			err = reuse.SetAt(int64(1), int(a[0]))
+			reuse.Set(int(a[0]), int64(1))
 		case tensor.Int:
-			err = reuse.SetAt(int(1), int(a[0]))
+			reuse.Set(int(a[0]), int(1))
 		case tensor.Int32:
-			err = reuse.SetAt(int32(1), int(a[0]))
+			reuse.Set(int(a[0]), int32(1))
 		default:
 			panic(fmt.Sprintf("UnsafeToOneHotVector not implemented for %v", dt))
-		}
-		if err != nil {
-			panic(err.Error())
 		}
 		return reuse
 	}
