@@ -79,15 +79,53 @@ func TestToClasses(t *testing.T) {
 	assert.Equal(t, ToClasses(matF32, 0), []Class{0, 0})
 
 	// Float64
+	// chewxy testcase
+	matF64 = T.New(T.WithBacking([]float64{0.1, 0.1, 0.6, 0.7, 0.1, 0.6, 0.1, 0.1, 0.7, 0.1}), T.WithShape(2, 5))
+	assert.Equal(t, ToClasses(matF64, 0), []Class{2, 0})
+
 	matF64 = T.New(T.WithBacking([]float64{0, 0, 1, 0, 1, 0}), shp)
 	assert.Equal(t, ToClasses(matF64, 0), []Class{2, 1})
+
+	matF64 = T.New(T.WithBacking([]float64{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp)
+	assert.Equal(t, ToClasses(matF64, 0), []Class{1, 1})
+
+	matF64 = T.New(T.WithBacking([]float64{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp)
+	assert.Equal(t, ToClasses(matF64, 0.65), []Class{2, 1})
+
+	matF64 = T.New(T.WithBacking([]float64{0.1, -1, 0.7, -1.0, 0.2, 0.6}), shp)
+	assert.Equal(t, ToClasses(matF64, 0), []Class{2, 2})
+
+	matF64 = T.New(T.WithBacking([]float64{1, 1, 1, 1, 1, 1}), shp)
+	assert.Equal(t, ToClasses(matF64, 0), []Class{0, 0})
 
 	// Int
 	matInt = T.New(T.WithBacking([]int{0, 0, 1, 0, 1, 0}), shp)
 	assert.Equal(t, ToClasses(matInt, 0), []Class{2, 1})
+
+	matInt = T.New(T.WithBacking([]int{0, 0, 1, 0, 1, 0}), shp)
+	assert.Equal(t, ToClasses(matInt, 999), []Class{2, 1})
+
+	matInt = T.New(T.WithBacking([]int{0, 0, 2, 1, 2, 0}), shp)
+	assert.Equal(t, ToClasses(matInt, 0), []Class{2, 0})
+
+	matInt = T.New(T.WithBacking([]int{1, 1, 1, 1, 1, 1}), shp)
+	assert.Equal(t, ToClasses(matInt, 0), []Class{0, 0})
+
+	matInt = T.New(T.WithBacking([]int{-1, 1, -2, -3, 0, 1}), shp)
+	assert.Equal(t, ToClasses(matInt, 0), []Class{1, 2})
+
 	// Uint
 	matUint = T.New(T.WithBacking([]uint{0, 0, 1, 0, 1, 0}), shp)
 	assert.Equal(t, ToClasses(matUint, 0), []Class{2, 1})
+
+	matUint = T.New(T.WithBacking([]uint{0, 0, 1, 0, 1, 0}), shp)
+	assert.Equal(t, ToClasses(matUint, 999), []Class{2, 1})
+
+	matUint = T.New(T.WithBacking([]uint{0, 0, 2, 1, 2, 0}), shp)
+	assert.Equal(t, ToClasses(matUint, 0), []Class{2, 0})
+
+	matUint = T.New(T.WithBacking([]uint{1, 1, 1, 1, 1, 1}), shp)
+	assert.Equal(t, ToClasses(matUint, 0), []Class{0, 0})
 }
 
 func TestToOneHotVector(t *testing.T) {
