@@ -220,11 +220,41 @@ func UnsafeToOneHotVector(a Class, numClasses uint, reuse *tensor.Dense) *tensor
 
 // UnsafeToOneHotMatrix converts a slice of Class to a OneHotMatrix, in the given tensor.Tensor. It expects a matrix of shape (len(a), numClasses). Panics otherwise.
 func UnsafeToOneHotMatrix(a []Class, numClasses uint, reuse *tensor.Dense) *tensor.Dense {
+	if !reuse.Shape().IsMatrix() {
+		panic(fmt.Sprintf("UnsafeToOneHotMatrix only works on matracies. The shape of `reuse` was %v", reuse.Shape()))
+	}
+	if reuse.Shape()[0] != len(a) {
+		panic(fmt.Sprintf("UnsafeToOneHotMatrix expects `len(a)` %d to be the number of rows in `reuse`: %d", len(a), reuse.Shape()[0]))
+	}
+	if reuse.Shape()[1] != int(numClasses) {
+		panic(fmt.Sprintf("UnsafeToOneHotMatrix expects class dim (columns) of `reuse`: %d to equal `numClasses`: %d", reuse.Shape()[1], int(numClasses)))
+	}
 	dt := reuse.Dtype()
 	reuse.Zero()
+	var err error
+	// Handline shapes of [1, numClasses]
+	if len(a) == 1 {
+		switch dt {
+		case tensor.Float32:
+			err = reuse.SetAt(float32(1), 0, int(a[0])-1)
+		case tensor.Float64:
+			err = reuse.SetAt(float64(1), int(a[0]))
+		case tensor.Int64:
+			err = reuse.SetAt(int64(1), int(a[0]))
+		case tensor.Int:
+			err = reuse.SetAt(int(1), int(a[0]))
+		case tensor.Int32:
+			err = reuse.SetAt(int32(1), int(a[0]))
+		default:
+			panic(fmt.Sprintf("UnsafeToOneHotVector not implemented for %v", dt))
+		}
+		if err != nil {
+			panic(err.Error())
+		}
+		return reuse
+	}
 	for i := range a {
-		var err error
-		id := int(a[i])
+		id := int(a[i]) //+
 		switch dt {
 		case tensor.Float32:
 			err = reuse.SetAt(float32(1), i, id)
