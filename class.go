@@ -165,27 +165,35 @@ func ToClasses(a tensor.Tensor, threshold float64) []Class {
 // ToOneHotVector converts a Class to a OneHotVector.
 //
 // The dtype defaults to tensor.Float64 if an empty Dtype was passed in.
-func ToOneHotVector(a Class, numClasses int, dtype tensor.Dtype) *tensor.Dense {
+func ToOneHotVector(a Class, numClasses uint, dtype tensor.Dtype) *tensor.Dense {
 	if dtype.Type == nil {
 		dtype = tensor.Float64
 	}
-	retVal := tensor.New(tensor.Of(dtype), tensor.WithShape(numClasses))
+	retVal := tensor.New(tensor.Of(dtype), tensor.WithShape(int(numClasses)))
 	return UnsafeToOneHotVector(a, numClasses, retVal)
 }
 
 // ToOneHotMatrix converts a slice of Class to a OneHotMatrix.
 //
 // The dtype defaults to tensor.Float64 if an empty Dtype was passed in.
-func ToOneHotMatrix(a []Class, numClasses int, dtype tensor.Dtype) *tensor.Dense {
+func ToOneHotMatrix(a []Class, numClasses uint, dtype tensor.Dtype) *tensor.Dense {
 	if dtype.Type == nil {
 		dtype = tensor.Float64
 	}
-	retVal := tensor.New(tensor.Of(dtype), tensor.WithShape(len(a), numClasses))
+	retVal := tensor.New(tensor.Of(dtype), tensor.WithShape(len(a), int(numClasses)))
 	return UnsafeToOneHotMatrix(a, numClasses, retVal)
 }
 
-// UnsafeToOneHotVector converts a class to a OneHotVector, in the given tensor.Tensor. It expects the MaxClass the length of the given vector. Panics otherwise.
-func UnsafeToOneHotVector(a Class, numClasses int, reuse *tensor.Dense) *tensor.Dense {
+// UnsafeToOneHotVector converts a class to a OneHotVector, in the given
+// tensor.Tensor. It expects the MaxClass the length of the given vector. Panics
+// otherwise.
+func UnsafeToOneHotVector(a Class, numClasses uint, reuse *tensor.Dense) *tensor.Dense {
+	if !reuse.Shape().IsVector() {
+		panic(fmt.Sprintf("UnsafeToOneHotVector only works on vectors. The shape of `reuse` was %v", reuse.Shape()))
+	}
+	if reuse.Shape()[0] != int(numClasses) {
+		panic(fmt.Sprintf("UnsafeToOneHotVector expects length of `reuse`: %d to equal `numClasses`: %d", reuse.Shape()[0], int(numClasses)))
+	}
 	dt := reuse.Dtype()
 	id := int(a)
 	reuse.Zero()
@@ -211,7 +219,7 @@ func UnsafeToOneHotVector(a Class, numClasses int, reuse *tensor.Dense) *tensor.
 }
 
 // UnsafeToOneHotMatrix converts a slice of Class to a OneHotMatrix, in the given tensor.Tensor. It expects a matrix of shape (len(a), numClasses). Panics otherwise.
-func UnsafeToOneHotMatrix(a []Class, numClasses int, reuse *tensor.Dense) *tensor.Dense {
+func UnsafeToOneHotMatrix(a []Class, numClasses uint, reuse *tensor.Dense) *tensor.Dense {
 	dt := reuse.Dtype()
 	reuse.Zero()
 	for i := range a {

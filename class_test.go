@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 	"gorgonia.org/tensor"
 	T "gorgonia.org/tensor"
 )
@@ -129,17 +130,145 @@ func TestToClasses(t *testing.T) {
 }
 
 func TestToOneHotVector(t *testing.T) {
-	// Not Implemented
+	// Panics
+	// n classes not the same as vector length
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 999, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 2, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	assert.NotPanics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	// Class is out of range
+	assert.Panics(t, func() { UnsafeToOneHotVector(10, 5, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	assert.Panics(t, func() { UnsafeToOneHotVector(5, 5, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	assert.NotPanics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	// Non Vector
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Float32), T.WithShape(1, 5))) })
+	// Unsupported type
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Complex64), T.WithShape(5))) })
+
+	// Value tests
+	// Float32
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float32{1, 1, 1, 1, 1}, []float32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float32{1, 1, 1, 1, 1}, []float32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []float32{0, 0, 0}, []float32{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 0, 0, 1, 0}))
+	// Float64
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float64{0, 0, 0, 0, 0}, []float64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float64{1, 1, 1, 1, 1}, []float64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float64{1, 1, 1, 1, 1}, []float64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []float64{0, 0, 0}, []float64{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []float64{0, 0, 0, 0, 0}, []float64{0, 0, 0, 1, 0}))
+	// Int32
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int32{0, 0, 0, 0, 0}, []int32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int32{1, 1, 1, 1, 1}, []int32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int32{1, 1, 1, 1, 1}, []int32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []int32{0, 0, 0}, []int32{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []int32{0, 0, 0, 0, 0}, []int32{0, 0, 0, 1, 0}))
+	// Int64
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int64{0, 0, 0, 0, 0}, []int64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int64{1, 1, 1, 1, 1}, []int64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int64{1, 1, 1, 1, 1}, []int64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []int64{0, 0, 0}, []int64{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []int64{0, 0, 0, 0, 0}, []int64{0, 0, 0, 1, 0}))
+	// Int
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int{0, 0, 0, 0, 0}, []int{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int{1, 1, 1, 1, 1}, []int{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int{1, 1, 1, 1, 1}, []int{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []int{0, 0, 0}, []int{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []int{0, 0, 0, 0, 0}, []int{0, 0, 0, 1, 0}))
 }
 
 func TestToOneHotMatrix(t *testing.T) {
-
 	// Not Implemented
 }
 
-func TestUnsafeToOneHotVector(t *testing.T) {
+func NewToOneHotVectorSuite(unsafe bool, a Class, numClasses uint, backingActual, backingExpected interface{}) *ToOneHotVectorSuite {
+	shp := T.WithShape(int(numClasses))
+	return &ToOneHotVectorSuite{
+		unsafe:     unsafe,
+		a:          a,
+		numClasses: numClasses,
+		reuse:      T.New(T.WithBacking(backingActual), shp),
+		expected:   T.New(T.WithBacking(backingExpected), shp),
+	}
+}
 
-	// Not Implemented
+// ToOneHotVectorSuite test both the safe and unsafe version and the
+// ToOneHotVector by specifying the `unsafe` boolean flag
+type ToOneHotVectorSuite struct {
+	suite.Suite
+	unsafe          bool
+	a               Class
+	numClasses      uint
+	reuse, expected *T.Dense
+}
+
+func (suite *ToOneHotVectorSuite) Test() {
+	// Safe or unsafe function
+	var oh *T.Dense
+	if suite.unsafe {
+		oh = UnsafeToOneHotVector(suite.a, suite.numClasses, suite.reuse)
+	} else {
+		oh = ToOneHotVector(suite.a, suite.numClasses, suite.reuse.Dtype())
+	}
+	// Check data and shape between expected and resulting of UnsafeToOneHotVector
+	assert.Equal(suite.T(), oh.Data(), suite.expected.Data())
+	assert.Equal(suite.T(), oh.Shape(), suite.expected.Shape())
+	if suite.unsafe {
+		// Check if the operation is infact unsafe
+		assert.Equal(suite.T(), suite.reuse.Data(), suite.expected.Data())
+		assert.Equal(suite.T(), suite.reuse.Shape(), suite.expected.Shape())
+		assert.Equal(suite.T(), &oh, &suite.reuse)
+	}
+}
+
+func TestToOneHotVectorSuite(t *testing.T) {
+	// Panics
+	// n classes not the same as vector length
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 999, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 2, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	assert.NotPanics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	// Class is out of range
+	assert.Panics(t, func() { UnsafeToOneHotVector(10, 5, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	assert.Panics(t, func() { UnsafeToOneHotVector(5, 5, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	assert.NotPanics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Float32), T.WithShape(5))) })
+	// Non Vector
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Float32), T.WithShape(5, 5))) })
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Float32), T.WithShape(1, 5))) })
+	// Unsupported type
+	assert.Panics(t, func() { UnsafeToOneHotVector(0, 5, T.New(T.Of(T.Complex64), T.WithShape(5))) })
+
+	// Value tests
+	// Float32
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []float32{1, 1, 1, 1, 1}, []float32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []float32{1, 1, 1, 1, 1}, []float32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 3, []float32{0, 0, 0}, []float32{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 3, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 0, 0, 1, 0}))
+	// Float64
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []float64{0, 0, 0, 0, 0}, []float64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []float64{1, 1, 1, 1, 1}, []float64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []float64{1, 1, 1, 1, 1}, []float64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 3, []float64{0, 0, 0}, []float64{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 3, 5, []float64{0, 0, 0, 0, 0}, []float64{0, 0, 0, 1, 0}))
+	// Int32
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int32{0, 0, 0, 0, 0}, []int32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int32{1, 1, 1, 1, 1}, []int32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int32{1, 1, 1, 1, 1}, []int32{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 3, []int32{0, 0, 0}, []int32{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 3, 5, []int32{0, 0, 0, 0, 0}, []int32{0, 0, 0, 1, 0}))
+	// Int64
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int64{0, 0, 0, 0, 0}, []int64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int64{1, 1, 1, 1, 1}, []int64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int64{1, 1, 1, 1, 1}, []int64{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 3, []int64{0, 0, 0}, []int64{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 3, 5, []int64{0, 0, 0, 0, 0}, []int64{0, 0, 0, 1, 0}))
+	// Int
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int{0, 0, 0, 0, 0}, []int{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int{1, 1, 1, 1, 1}, []int{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int{1, 1, 1, 1, 1}, []int{0, 1, 0, 0, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 1, 3, []int{0, 0, 0}, []int{0, 1, 0}))
+	suite.Run(t, NewToOneHotVectorSuite(true, 3, 5, []int{0, 0, 0, 0, 0}, []int{0, 0, 0, 1, 0}))
 }
 
 func TestUnsafeToOneHotMatrix(t *testing.T) {
