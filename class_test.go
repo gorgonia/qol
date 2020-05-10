@@ -189,30 +189,25 @@ func TestToOneHotVectorSuite(t *testing.T) {
 	// Float32
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float32{1, 1, 1, 1, 1}, []float32{0, 1, 0, 0, 0}))
-	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float32{1, 1, 1, 1, 1}, []float32{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []float32{0, 0, 0}, []float32{0, 1, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 0, 0, 1, 0}))
 	// Float64
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float64{0, 0, 0, 0, 0}, []float64{0, 1, 0, 0, 0}))
-	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float64{1, 1, 1, 1, 1}, []float64{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []float64{1, 1, 1, 1, 1}, []float64{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []float64{0, 0, 0}, []float64{0, 1, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []float64{0, 0, 0, 0, 0}, []float64{0, 0, 0, 1, 0}))
 	// Int32
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int32{0, 0, 0, 0, 0}, []int32{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int32{1, 1, 1, 1, 1}, []int32{0, 1, 0, 0, 0}))
-	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int32{1, 1, 1, 1, 1}, []int32{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []int32{0, 0, 0}, []int32{0, 1, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []int32{0, 0, 0, 0, 0}, []int32{0, 0, 0, 1, 0}))
 	// Int64
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int64{0, 0, 0, 0, 0}, []int64{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int64{1, 1, 1, 1, 1}, []int64{0, 1, 0, 0, 0}))
-	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int64{1, 1, 1, 1, 1}, []int64{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []int64{0, 0, 0}, []int64{0, 1, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []int64{0, 0, 0, 0, 0}, []int64{0, 0, 0, 1, 0}))
 	// Int
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int{0, 0, 0, 0, 0}, []int{0, 1, 0, 0, 0}))
-	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int{1, 1, 1, 1, 1}, []int{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 5, []int{1, 1, 1, 1, 1}, []int{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 1, 3, []int{0, 0, 0}, []int{0, 1, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []int{0, 0, 0, 0, 0}, []int{0, 0, 0, 1, 0}))
@@ -316,5 +311,26 @@ func TestUnsafeToOneHotMatrix(t *testing.T) {
 	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1}, 5, []float32{0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0}, []int{1, 5}))
 	// Col Vector
 	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{0, 0, 0, 0, 0}, 1, []float32{0, 0, 0, 0, 0}, []float32{1, 1, 1, 1, 1}, []int{5, 1}))
-	// suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1, 1}, 5, []float32{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 0, 0, 1, 0, 0, 0}, []int{2, 5}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1, 1}, 3, []float32{0, 0, 0, 0, 0, 0}, []float32{0, 1, 0, 0, 1, 0}, []int{2, 3}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{2, 0}, 3, []float32{0, 0, 0, 0, 0, 0}, []float32{0, 0, 1, 1, 0, 0}, []int{2, 3}))
+	// Float64
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1}, 5, []float64{0, 0, 0, 0, 0}, []float64{0, 1, 0, 0, 0}, []int{1, 5}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{0, 0, 0, 0, 0}, 1, []float64{0, 0, 0, 0, 0}, []float64{1, 1, 1, 1, 1}, []int{5, 1}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1, 1}, 3, []float64{0, 0, 0, 0, 0, 0}, []float64{0, 1, 0, 0, 1, 0}, []int{2, 3}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{2, 0}, 3, []float64{0, 0, 0, 0, 0, 0}, []float64{0, 0, 1, 1, 0, 0}, []int{2, 3}))
+	// Int
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1}, 5, []int{0, 0, 0, 0, 0}, []int{0, 1, 0, 0, 0}, []int{1, 5}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{0, 0, 0, 0, 0}, 1, []int{0, 0, 0, 0, 0}, []int{1, 1, 1, 1, 1}, []int{5, 1}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1, 1}, 3, []int{0, 0, 0, 0, 0, 0}, []int{0, 1, 0, 0, 1, 0}, []int{2, 3}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{2, 0}, 3, []int{0, 0, 0, 0, 0, 0}, []int{0, 0, 1, 1, 0, 0}, []int{2, 3}))
+	// Int64
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1}, 5, []int64{0, 0, 0, 0, 0}, []int64{0, 1, 0, 0, 0}, []int{1, 5}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{0, 0, 0, 0, 0}, 1, []int64{0, 0, 0, 0, 0}, []int64{1, 1, 1, 1, 1}, []int{5, 1}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1, 1}, 3, []int64{0, 0, 0, 0, 0, 0}, []int64{0, 1, 0, 0, 1, 0}, []int{2, 3}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{2, 0}, 3, []int64{0, 0, 0, 0, 0, 0}, []int64{0, 0, 1, 1, 0, 0}, []int{2, 3}))
+	// Int32
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1}, 5, []int32{0, 0, 0, 0, 0}, []int32{0, 1, 0, 0, 0}, []int{1, 5}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{0, 0, 0, 0, 0}, 1, []int32{0, 0, 0, 0, 0}, []int32{1, 1, 1, 1, 1}, []int{5, 1}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{1, 1}, 3, []int32{0, 0, 0, 0, 0, 0}, []int32{0, 1, 0, 0, 1, 0}, []int{2, 3}))
+	suite.Run(t, NewToOneHotMatrixSuite(true, []Class{2, 0}, 3, []int32{0, 0, 0, 0, 0, 0}, []int32{0, 0, 1, 1, 0, 0}, []int{2, 3}))
 }
