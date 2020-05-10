@@ -128,6 +128,45 @@ func TestToClasses(t *testing.T) {
 	matUint = T.New(T.WithBacking([]uint{1, 1, 1, 1, 1, 1}), shp)
 	assert.Equal(t, ToClasses(matUint, 0), []Class{0, 0})
 }
+func NewToOneHotVectorSuite(unsafe bool, a Class, numClasses uint, backingActual, backingExpected interface{}) *ToOneHotVectorSuite {
+	shp := T.WithShape(int(numClasses))
+	return &ToOneHotVectorSuite{
+		unsafe:     unsafe,
+		a:          a,
+		numClasses: numClasses,
+		reuse:      T.New(T.WithBacking(backingActual), shp),
+		expected:   T.New(T.WithBacking(backingExpected), shp),
+	}
+}
+
+// ToOneHotVectorSuite test both the safe and unsafe version and the
+// ToOneHotVector by specifying the `unsafe` boolean flag
+type ToOneHotVectorSuite struct {
+	suite.Suite
+	unsafe          bool
+	a               Class
+	numClasses      uint
+	reuse, expected *T.Dense
+}
+
+func (suite *ToOneHotVectorSuite) Test() {
+	// Safe or unsafe function
+	var oh *T.Dense
+	if suite.unsafe {
+		oh = UnsafeToOneHotVector(suite.a, suite.numClasses, suite.reuse)
+	} else {
+		oh = ToOneHotVector(suite.a, suite.numClasses, suite.reuse.Dtype())
+	}
+	// Check data and shape between expected and resulting of UnsafeToOneHotVector
+	assert.Equal(suite.T(), oh.Data(), suite.expected.Data())
+	assert.Equal(suite.T(), oh.Shape(), suite.expected.Shape())
+	if suite.unsafe {
+		// Check if the operation is infact unsafe
+		assert.Equal(suite.T(), suite.reuse.Data(), suite.expected.Data())
+		assert.Equal(suite.T(), suite.reuse.Shape(), suite.expected.Shape())
+		assert.Equal(suite.T(), &oh, &suite.reuse)
+	}
+}
 
 func TestToOneHotVector(t *testing.T) {
 	// Panics
@@ -178,50 +217,6 @@ func TestToOneHotVector(t *testing.T) {
 	suite.Run(t, NewToOneHotVectorSuite(false, 3, 5, []int{0, 0, 0, 0, 0}, []int{0, 0, 0, 1, 0}))
 }
 
-func TestToOneHotMatrix(t *testing.T) {
-	// Not Implemented
-}
-
-func NewToOneHotVectorSuite(unsafe bool, a Class, numClasses uint, backingActual, backingExpected interface{}) *ToOneHotVectorSuite {
-	shp := T.WithShape(int(numClasses))
-	return &ToOneHotVectorSuite{
-		unsafe:     unsafe,
-		a:          a,
-		numClasses: numClasses,
-		reuse:      T.New(T.WithBacking(backingActual), shp),
-		expected:   T.New(T.WithBacking(backingExpected), shp),
-	}
-}
-
-// ToOneHotVectorSuite test both the safe and unsafe version and the
-// ToOneHotVector by specifying the `unsafe` boolean flag
-type ToOneHotVectorSuite struct {
-	suite.Suite
-	unsafe          bool
-	a               Class
-	numClasses      uint
-	reuse, expected *T.Dense
-}
-
-func (suite *ToOneHotVectorSuite) Test() {
-	// Safe or unsafe function
-	var oh *T.Dense
-	if suite.unsafe {
-		oh = UnsafeToOneHotVector(suite.a, suite.numClasses, suite.reuse)
-	} else {
-		oh = ToOneHotVector(suite.a, suite.numClasses, suite.reuse.Dtype())
-	}
-	// Check data and shape between expected and resulting of UnsafeToOneHotVector
-	assert.Equal(suite.T(), oh.Data(), suite.expected.Data())
-	assert.Equal(suite.T(), oh.Shape(), suite.expected.Shape())
-	if suite.unsafe {
-		// Check if the operation is infact unsafe
-		assert.Equal(suite.T(), suite.reuse.Data(), suite.expected.Data())
-		assert.Equal(suite.T(), suite.reuse.Shape(), suite.expected.Shape())
-		assert.Equal(suite.T(), &oh, &suite.reuse)
-	}
-}
-
 func TestToOneHotVectorSuite(t *testing.T) {
 	// Panics
 	// n classes not the same as vector length
@@ -269,6 +264,10 @@ func TestToOneHotVectorSuite(t *testing.T) {
 	suite.Run(t, NewToOneHotVectorSuite(true, 1, 5, []int{1, 1, 1, 1, 1}, []int{0, 1, 0, 0, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(true, 1, 3, []int{0, 0, 0}, []int{0, 1, 0}))
 	suite.Run(t, NewToOneHotVectorSuite(true, 3, 5, []int{0, 0, 0, 0, 0}, []int{0, 0, 0, 1, 0}))
+}
+
+func TestToOneHotMatrix(t *testing.T) {
+	// Not Implemented
 }
 
 func TestUnsafeToOneHotMatrix(t *testing.T) {
