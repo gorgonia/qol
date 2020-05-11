@@ -5,7 +5,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"gorgonia.org/tensor"
 	T "gorgonia.org/tensor"
 )
 
@@ -57,76 +56,34 @@ func TestToClasses(t *testing.T) {
 	assert.Panics(t, func() { ToClasses(T.New(T.WithBacking([]float32{0, 0, 1, 0, 0, 1}), T.WithShape(2, 3)), 999) })
 	// Value Tests
 	// only specifying matracies of length 2x3 varying values, type, and threshold
-	var matF32, matF64, matInt, matUint tensor.Tensor
 	shp := T.WithShape(2, 3)
 	// Float32
 	// chewxy testcase
-	matF32 = T.New(T.WithBacking([]float32{0.1, 0.1, 0.6, 0.7, 0.1, 0.6, 0.1, 0.1, 0.7, 0.1}), T.WithShape(2, 5))
-	assert.Equal(t, []Class{2, 0}, ToClasses(matF32, 0))
-
-	matF32 = T.New(T.WithBacking([]float32{0, 0, 1, 0, 1, 0}), shp)
-	assert.Equal(t, []Class{2, 1}, ToClasses(matF32, 0))
-
-	matF32 = T.New(T.WithBacking([]float32{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp)
-	assert.Equal(t, []Class{1, 1}, ToClasses(matF32, 0))
-
-	matF32 = T.New(T.WithBacking([]float32{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp)
-	assert.Equal(t, []Class{2, 1}, ToClasses(matF32, 0.65))
-
-	matF32 = T.New(T.WithBacking([]float32{0.1, -1, 0.7, -1.0, 0.2, 0.6}), shp)
-	assert.Equal(t, []Class{2, 2}, ToClasses(matF32, 0))
-
-	matF32 = T.New(T.WithBacking([]float32{1, 1, 1, 1, 1, 1}), shp)
-	assert.Equal(t, []Class{0, 0}, ToClasses(matF32, 0))
-
+	assert.Equal(t, []Class{2, 0}, ToClasses(T.New(T.WithBacking([]float32{0.1, 0.1, 0.6, 0.7, 0.1, 0.6, 0.1, 0.1, 0.7, 0.1}), T.WithShape(2, 5)), 0))
+	assert.Equal(t, []Class{2, 1}, ToClasses(T.New(T.WithBacking([]float32{0, 0, 1, 0, 1, 0}), shp), 0))
+	assert.Equal(t, []Class{1, 1}, ToClasses(T.New(T.WithBacking([]float32{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp), 0))
+	assert.Equal(t, []Class{2, 1}, ToClasses(T.New(T.WithBacking([]float32{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp), 0.65))
+	assert.Equal(t, []Class{2, 2}, ToClasses(T.New(T.WithBacking([]float32{0.1, -1, 0.7, -1.0, 0.2, 0.6}), shp), 0))
+	assert.Equal(t, []Class{0, 0}, ToClasses(T.New(T.WithBacking([]float32{1, 1, 1, 1, 1, 1}), shp), 0))
 	// Float64
 	// chewxy testcase
-	matF64 = T.New(T.WithBacking([]float64{0.1, 0.1, 0.6, 0.7, 0.1, 0.6, 0.1, 0.1, 0.7, 0.1}), T.WithShape(2, 5))
-	assert.Equal(t, []Class{2, 0}, ToClasses(matF64, 0))
-
-	matF64 = T.New(T.WithBacking([]float64{0, 0, 1, 0, 1, 0}), shp)
-	assert.Equal(t, []Class{2, 1}, ToClasses(matF64, 0))
-
-	matF64 = T.New(T.WithBacking([]float64{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp)
-	assert.Equal(t, []Class{1, 1}, ToClasses(matF64, 0))
-
-	matF64 = T.New(T.WithBacking([]float64{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp)
-	assert.Equal(t, []Class{2, 1}, ToClasses(matF64, 0.65))
-
-	matF64 = T.New(T.WithBacking([]float64{0.1, -1, 0.7, -1.0, 0.2, 0.6}), shp)
-	assert.Equal(t, []Class{2, 2}, ToClasses(matF64, 0))
-
-	matF64 = T.New(T.WithBacking([]float64{1, 1, 1, 1, 1, 1}), shp)
-	assert.Equal(t, []Class{0, 0}, ToClasses(matF64, 0))
-
+	assert.Equal(t, []Class{2, 0}, ToClasses(T.New(T.WithBacking([]float64{0.1, 0.1, 0.6, 0.7, 0.1, 0.6, 0.1, 0.1, 0.7, 0.1}), T.WithShape(2, 5)), 0))
+	assert.Equal(t, []Class{2, 1}, ToClasses(T.New(T.WithBacking([]float64{0, 0, 1, 0, 1, 0}), shp), 0))
+	assert.Equal(t, []Class{1, 1}, ToClasses(T.New(T.WithBacking([]float64{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp), 0))
+	assert.Equal(t, []Class{2, 1}, ToClasses(T.New(T.WithBacking([]float64{0.1, 0.6, 0.7, 0.1, 0.7, 0.6}), shp), 0.65))
+	assert.Equal(t, []Class{2, 2}, ToClasses(T.New(T.WithBacking([]float64{0.1, -1, 0.7, -1.0, 0.2, 0.6}), shp), 0))
+	assert.Equal(t, []Class{0, 0}, ToClasses(T.New(T.WithBacking([]float64{1, 1, 1, 1, 1, 1}), shp), 0))
 	// Int
-	matInt = T.New(T.WithBacking([]int{0, 0, 1, 0, 1, 0}), shp)
-	assert.Equal(t, []Class{2, 1}, ToClasses(matInt, 0))
-
-	matInt = T.New(T.WithBacking([]int{0, 0, 1, 0, 1, 0}), shp)
-	assert.Equal(t, []Class{2, 1}, ToClasses(matInt, 999))
-
-	matInt = T.New(T.WithBacking([]int{0, 0, 2, 1, 2, 0}), shp)
-	assert.Equal(t, []Class{2, 0}, ToClasses(matInt, 0))
-
-	matInt = T.New(T.WithBacking([]int{1, 1, 1, 1, 1, 1}), shp)
-	assert.Equal(t, []Class{0, 0}, ToClasses(matInt, 0))
-
-	matInt = T.New(T.WithBacking([]int{-1, 1, -2, -3, 0, 1}), shp)
-	assert.Equal(t, []Class{1, 2}, ToClasses(matInt, 0))
-
+	assert.Equal(t, []Class{2, 1}, ToClasses(T.New(T.WithBacking([]int{0, 0, 1, 0, 1, 0}), shp), 0))
+	assert.Equal(t, []Class{2, 1}, ToClasses(T.New(T.WithBacking([]int{0, 0, 1, 0, 1, 0}), shp), 999))
+	assert.Equal(t, []Class{2, 0}, ToClasses(T.New(T.WithBacking([]int{0, 0, 2, 1, 2, 0}), shp), 0))
+	assert.Equal(t, []Class{0, 0}, ToClasses(T.New(T.WithBacking([]int{1, 1, 1, 1, 1, 1}), shp), 0))
+	assert.Equal(t, []Class{1, 2}, ToClasses(T.New(T.WithBacking([]int{-1, 1, -2, -3, 0, 1}), shp), 0))
 	// Uint
-	matUint = T.New(T.WithBacking([]uint{0, 0, 1, 0, 1, 0}), shp)
-	assert.Equal(t, []Class{2, 1}, ToClasses(matUint, 0))
-
-	matUint = T.New(T.WithBacking([]uint{0, 0, 1, 0, 1, 0}), shp)
-	assert.Equal(t, []Class{2, 1}, ToClasses(matUint, 999))
-
-	matUint = T.New(T.WithBacking([]uint{0, 0, 2, 1, 2, 0}), shp)
-	assert.Equal(t, []Class{2, 0}, ToClasses(matUint, 0))
-
-	matUint = T.New(T.WithBacking([]uint{1, 1, 1, 1, 1, 1}), shp)
-	assert.Equal(t, []Class{0, 0}, ToClasses(matUint, 0))
+	assert.Equal(t, []Class{2, 1}, ToClasses(T.New(T.WithBacking([]uint{0, 0, 1, 0, 1, 0}), shp), 0))
+	assert.Equal(t, []Class{2, 1}, ToClasses(T.New(T.WithBacking([]uint{0, 0, 1, 0, 1, 0}), shp), 999))
+	assert.Equal(t, []Class{2, 0}, ToClasses(T.New(T.WithBacking([]uint{0, 0, 2, 1, 2, 0}), shp), 0))
+	assert.Equal(t, []Class{0, 0}, ToClasses(T.New(T.WithBacking([]uint{1, 1, 1, 1, 1, 1}), shp), 0))
 }
 
 func NewToOneHotVectorSuite(unsafe bool, a Class, numClasses uint, backingActual, backingExpected interface{}) *ToOneHotVectorSuite {
