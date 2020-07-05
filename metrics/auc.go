@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"sort"
 )
@@ -85,7 +86,9 @@ func AreaUnderROC(predictor, target []float64, targetRanges []*TargetRange) (res
 		}
 	}
 	vs := VposSlice(vp)
+	log.Printf("vs %v", vs)
 	sort.Sort(vs)
+	log.Printf("vs2 %v", vs)
 
 	// get the rank of each prediction  (will be .pos +1); and
 	// these are back in correspondence to the target.
@@ -95,7 +98,9 @@ func AreaUnderROC(predictor, target []float64, targetRanges []*TargetRange) (res
 		rank[i].pos = i
 	}
 	rs := VposSlice(rank)
+	log.Printf("rs %v", rs)
 	sort.Sort(rs)
+	log.Printf("rs2 %v", rs)
 
 	if len(targetRanges) == 0 {
 		targetRanges = []*TargetRange{&TargetRange{Thresh: 0}}
