@@ -2,10 +2,17 @@ package qol
 
 import (
 	"fmt"
+	"reflect"
 
 	"gorgonia.org/tensor"
 	"gorgonia.org/tensor/native"
 )
+
+// ClassType returns the tensor.Dtype for Class. This allows it to be used in Gorgonia graphs.
+func ClassType() tensor.Dtype {
+	var c Class
+	return tensor.Dtype{reflect.TypeOf(c)}
+}
 
 // Class represents the class ID of a dataset. It is an unbound type with a minimum of 0.
 type Class uint
