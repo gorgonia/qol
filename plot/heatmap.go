@@ -44,9 +44,7 @@ func Heatmap(x tensor.Tensor, labels []string) (p *plot.Plot, err error) {
 
 	m := heatmap{mat}
 	hm := plotter.NewHeatMap(m, pal)
-	if p, err = plot.New(); err != nil {
-		return nil, errors.Wrap(err, "Creating a new plot.Plot failed.")
-	}
+	p = plot.New()
 	hm.NaN = color.RGBA{0, 0, 0, 0} // black for NaN
 
 	p.Add(hm)
