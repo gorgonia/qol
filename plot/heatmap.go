@@ -29,7 +29,12 @@ type ticks []string
 func (t ticks) Ticks(min, max float64) []plot.Tick {
 	var retVal []plot.Tick
 	for i := math.Trunc(min); i <= max; i++ {
-		retVal = append(retVal, plot.Tick{Value: i, Label: t[int(i)]})
+		label := ""
+		if int(i) < len(t) {
+			label = t[int(i)]
+		}
+
+		retVal = append(retVal, plot.Tick{Value: i, Label: label})
 	}
 	return retVal
 }
